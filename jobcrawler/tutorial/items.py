@@ -8,8 +8,16 @@
 import scrapy
 
 class TutorialItem(scrapy.Item):
-    company = scrapy.Field()
+    company_name = scrapy.Field()
     title = scrapy.Field()
     job = scrapy.Field()
     deadline = scrapy.Field()
+    career = scrapy.Field()
+    company_info = scrapy.Field()
+    homepage = scrapy.Field()
+    achievement = scrapy.Field()
+    area = scrapy.Field()
+    #author_name = scrapy.Field()
+    #text = scrapy.Field()
+    #tags = scrapy.Field()
     pass
