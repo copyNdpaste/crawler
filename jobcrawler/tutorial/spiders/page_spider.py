@@ -2,10 +2,18 @@
 import scrapy
 from tutorial.items import TutorialItem
 from scrapy import Request
+from pymongo import MongoClient
+
 class pageLinks(scrapy.Spider):
+    client = MongoClient('localhost', 27017)
+    database = client.jobInfos
+    collection = database.infos
+
     name = "test"
+    #rotate_user_agent = True #user_agent 교체하기
     allowed_domains = ["jobkorea.co.kr"]
     start_urls=[]
+    dictionary = {}
     for i in range(1,6):
         start_urls.append('http://www.jobkorea.co.kr/Starter/?JoinPossible_Stat=0&schPart=%2C10016%2C&schOrderBy=0&LinkGubun=0&LinkNo=0&schType=0&schGid=0&Page='+str(i))
     def parse(self, response): #페이지의 기업 홈페이지 주소를 스크래핑함
@@ -31,9 +39,31 @@ class pageLinks(scrapy.Spider):
             link = response.urljoin(info.xpath('div[2]/div[1]/a/@href')[0].extract())
             #print(link)
             #yield scrapy.Request(link, callback=self.parse_homepage)
+            #lenth = len(item)
+            #for i in range(lenth):
+            #    self.collection.insert({list(item.keys())[i]:list(item.values())[i]})
+            for key in item:
+                self.dictionary[key] = item.get(key)
+            self.collection.insert(self.dictionary,manipulate=False)
+            #self.collection.insert({'hi': 'www.jobkorea.co.kr/Recruit/Co_Read/C/fany77sy?Oem_Code=C1&PageGbn=ST',
+            #                        "sdfsdf":12})
             yield item
     '''def parse_homepage(self, response):
         print("parse_homepage")
         item = TutorialItem()
         item['homepage'] = response.xpath('//*[@id="container"]/section/div/article/div[2]/div[3]/dl/dd[5]/span/a/@href')[0].extract()
         yield item'''
+#중복 제거
+'''from scrapy.exceptions import DropItem
+
+class DuplicatesPipeline(object):
+
+    def __init__(self):
+        self.ids_seen = set()
+
+    def process_item(self, item, spider):
+        if item['id'] in self.ids_seen:
+            raise DropItem("Duplicate item found: %s" % item)
+        else:
+            self.ids_seen.add(item['id'])
+            return item'''
