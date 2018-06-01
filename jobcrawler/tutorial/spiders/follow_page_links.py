@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import scrapy
+'''import scrapy
 
 class pageLinks(scrapy.Spider):
     name = "pagelinks"
@@ -18,4 +18,4 @@ class pageLinks(scrapy.Spider):
         next_page = response.css("li.next>a::attr(href)")[0].extract()
         if next_page:
             next_page = response.urljoin(next_page)
-            yield scrapy.Request(url=next_page, callback=self.parse)
+            yield scrapy.Request(url=next_page, callback=self.parse)'''
